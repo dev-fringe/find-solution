@@ -12,15 +12,17 @@ OS별로 나눈다. 기본 case는 crontab(예약), 포트를 여는 프로세�
 ## Case 1. crontab (시간이 되면 실행, 평소엔 안 떠 있음)
 
 ```
-crontab -l ; sudo ls /var/spool/cron/crontabs
-grep -v -E '^\s*(#|$)' /etc/crontab /etc/cron.d/*
+crontab -l ; sudo ls /var/spool/cron/crontabs 2>/dev/null
+grep -v -E '^\s*(#|$)' /etc/crontab /etc/cron.d/* 2>/dev/null
+ls -l /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly 2>/dev/null
 systemctl list-timers --all
 ```
 
-## Case 2. lsof (포트를 여는 프로세스)
+## Case 2. 포트를 여는 프로세스 (ss / lsof)
 
 ```
-sudo lsof -nP -iTCP -sTCP:LISTEN
+sudo ss -ltnp                       # Linux / Ubuntu 기본 내장
+sudo lsof -nP -iTCP -sTCP:LISTEN    # lsof 설치 환경
 ```
 
 PID와 포트가 나온다. PID로 실행 계정, 시작 시각, 명령줄, 실행 위치를 본다.
