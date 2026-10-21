@@ -140,6 +140,19 @@ case_installed() {
     ls -la /etc/init.d 2>/dev/null
   fi
 
+  echo; echo "## 패키지 미등록 파일 (/opt, /usr/local 등 dpkg에 속하지 않는 수동 설치 파일)"
+  if command -v dpkg >/dev/null 2>&1; then
+    for dir in /opt /usr/local/bin /usr/local/sbin /srv; do
+      if [ -d "$dir" ]; then
+        find "$dir" -maxdepth 1 -mindepth 1 2>/dev/null | while read -r f; do
+          if ! dpkg -S "$f" >/dev/null 2>&1; then
+            ls -ld "$f"
+          fi
+        done
+      fi
+    done
+  fi
+
   echo; echo "## apt manual (수동 설치 패키지)"
   if command -v apt-mark >/dev/null 2>&1; then
     apt-mark showmanual 2>&1

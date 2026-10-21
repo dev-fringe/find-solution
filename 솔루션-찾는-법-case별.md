@@ -45,6 +45,10 @@ ps -eo user,pid,lstart,args --sort=start_time | grep -v ' \['
 ```
 ls -lt /opt /srv /usr/local /home
 apt-mark showmanual
+
+# 패키지 관리자(dpkg)에 등록되지 않은 수동 설치 파일/바이너리 확인
+for f in /opt/* /usr/local/bin/*; do [ -e "$f" ] && ! dpkg -S "$f" >/dev/null 2>&1 && ls -ld "$f"; done
+
 systemctl list-unit-files --type=service --state=enabled | grep -v -E 'ubuntu|systemd|snap'
 ```
 
